@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Poor Fish's Journey 🐟</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <!-- Leaflet.js CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+</head>
+<body>
+
+    <!-- 🔹 Navigation -->
+    <%- include('partials/navbar') %>
+
+    <!-- 🔹 Landing Page -->
+    <section id="home">
+        <h1>🐟 The Poor Fish Wants to See the World!</h1>
+        <img src="/images/fish.png" alt="Poor Fish" class="fish-image">
+    </section>
+
+    <!-- 🔹 Live Map Section -->
+    <section id="map-section">
+        <h2>🌍 Where Has the Fish Traveled?</h2>
+        <div id="map"></div>
+    </section>
+    <h2>Track the Fish Manually</h2>
+<form id="manualTrackForm">
+  <input type="text" id="city" placeholder="City" required />
+  <input type="text" id="country" placeholder="Country" required />
+  <input type="number" id="lat" placeholder="Latitude" step="any" required />
+  <input type="number" id="lng" placeholder="Longitude" step="any" required />
+  <button type="submit">Track Location</button>
+</form>
+
+    <!-- 🔹 User Comments Section -->
+    <section id="comments">
+        <h2>💬 Share Your Thoughts!</h2>
+        <textarea id="userComment" placeholder="Type your message here..."></textarea>
+        <button onclick="postComment()">Submit</button>
+        <div id="commentList">
+            <% comments.forEach(comment => { %>
+                <p><%= comment.text %> - <small><%= new Date(comment.timestamp).toLocaleString() %></small></p>
+            <% }); %>
+        </div>
+    </section>
+
+    <!-- 🔹 Footer -->
+    <%- include('partials/footer') %>
+
+    <!-- 🔹 Leaflet.js Script -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="/js/script.js"></script>
+
+</body>
+</html>
