@@ -37,7 +37,9 @@
     <section id="comments">
         <h2>💬 Share Your Thoughts!</h2>
         <textarea id="userComment" placeholder="Type your message here..."></textarea>
+       <center>
         <button onclick="postComment()">Submit</button>
+       </center>
         <div id="commentList">
             <% comments.forEach(comment => { %>
                 <p><%= comment.text %> - <small><%= new Date(comment.timestamp).toLocaleString() %></small></p>

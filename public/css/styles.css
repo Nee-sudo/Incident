@@ -8,43 +8,61 @@ body {
 }
 
 /* Navigation */
-nav {
+.navbar {
     background: #007bff;
     padding: 15px;
     position: fixed;
     top: 0;
     width: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     z-index: 1000;
-}
-
-nav ul {
+  }
+  
+  .navbar-logo {
+    margin-right: auto;
+  }
+  
+  .navbar-logo img {
+    height: 40px;
+    width: auto;
+  }
+  
+  .navbar-menu {
     list-style: none;
     padding: 0;
     margin: 0;
     display: flex;
-    gap: 20px;
-}
-
-nav ul li {
+    gap: 10px; /* Reduced gap for mobile */
+    margin-right: 10%;
+  }
+  
+  .navbar-menu li {
     display: inline;
-}
-
-nav ul li a {
+  }
+  
+  .navbar-menu li a {
     color: white;
     text-decoration: none;
-    font-size: 18px;
-}
-
-/* Responsive Navbar for Mobile */
-@media screen and (max-width: 768px) {
-    nav ul {
-        flex-direction: column;
-        gap: 10px;
+    font-size: 16px; /* Reduced font size for mobile */
+    padding: 5px; /* Added padding for better touch targets */
+  }
+  
+  @media (max-width: 768px) {
+    .navbar-menu {
+      flex-wrap: wrap; /* Allow items to wrap to the next line */
+      justify-content: center; /* Center items on mobile */
     }
-}
+  
+    .navbar-menu li {
+      display: inline-block; /* Allows width/height to be set */
+    }
+  
+    .navbar-menu li a {
+      font-size: 14px; /* Further reduced font size */
+    }
+  }
 
 /* Page Headings */
 h1, h2 {
@@ -128,32 +146,6 @@ button:hover {
     font-size: 18px;
     margin: 10px 0;
 }
-/* Navbar Styling */
-nav {
-    background: #007bff;
-    padding: 15px;
-    position: fixed;
-    top: 0;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    z-index: 1000;
-}
-
-nav ul {
-    list-style: none;
-    display: flex;
-    gap: 20px;
-    padding: 0;
-    margin: 0;
-}
-
-nav ul li a {
-    color: #fff;
-    text-decoration: none;
-    font-size: 18px;
-}
-
 /* Footer Styling */
 footer {
     background: #333;
