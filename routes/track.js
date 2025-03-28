@@ -5,51 +5,67 @@ const Comment = require("../models/commentModel");
 const countryCodes = require("../utils/countryCodes");
 const router = express.Router();
 
+// ipinfo.io API token (replace with your own token)
+const IPINFO_TOKEN = "032783179f989d"; // Sign up at ipinfo.io to get a free token
+
 // Track User Location with IP
-router.get("/track", async (req, res) => {
+router.post("/track", async (req, res) => {
     try {
-        const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+        const { ipAddress } = req.body;
+        console.log("IP Address:", ipAddress); // Log the IP address for debugging
 
-        if (ip === "127.0.0.1" || ip === "::1") {
-            const mockData = {
-                city: "Beijing",
-                country: "China",
-                loc: "39.9042,116.4074",
-                countryCode: "CN"
-            };
-            const { city, country, loc, countryCode } = mockData;
-            const [lat, lng] = loc.split(",").map(Number);
-            const flagUrl = `https://flagcdn.com/w320/${countryCode.toLowerCase()}.png`;
-
-            const newLocation = new Location({
-                intendedCity: null,
-                intendedCountry: null,
-                actualCity: city,
-                actualCountry: country,
-                lat,
-                lng,
-                flagUrl
-            });
-            await newLocation.save();
-
-            return res.json({
-                intendedCity: null,
-                intendedCountry: null,
-                actualCity: city,
-                actualCountry: country,
-                lat,
-                lng,
-                flagUrl
-            });
+        if (!ipAddress) {
+            return res.status(400).json({ error: "IP address is required" });
+        }
+        else {
+            console.log("IP Address provided:", ipAddress); // Log the provided IP address
         }
 
-        const response = await axios.get(`https://ipinfo.io/${ip}/json`);
-        const { city, country, loc, countryCode } = response.data;
+        // For local testing, use mock data
+        // if (ipAddress) {
+        //     const mockData = {
+        //         city: "Beijing",
+        //         country: "China",
+        //         loc: "39.9042,116.4074",
+        //         countryCode: "CN" // Mock data for local testing
+        //     };
+        //     const { city, country, loc, countryCode } = mockData;
+        //     const [lat, lng] = loc.split(",").map(Number);
+        //     const flagUrl = `https://flagcdn.com/w320/${countryCode.toLowerCase()}.png`;
 
-        if (!city || !country || !loc) return res.status(400).json({ error: "Location not found" });
+        //     const newLocation = new Location({
+        //         intendedCity: null,
+        //         intendedCountry: null,
+        //         actualCity: city,
+        //         actualCountry: country,
+        //         lat,
+        //         lng,
+        //         flagUrl
+        //     });
+        //     await newLocation.save();
+
+        //     return res.json({
+        //         intendedCity: null,
+        //         intendedCountry: null,
+        //         actualCity: city,
+        //         actualCountry: country,
+        //         lat,
+        //         lng,
+        //         flagUrl
+        //     });
+        // }
+
+        // Fetch geolocation data using ipinfo.io
+        const response = await axios.get(`https://ipinfo.io/${ipAddress}?token=${IPINFO_TOKEN}`);
+        const { city, country, loc, countryCode } = response.data;
+        console.log("Geolocation data:", response.data); // Log the geolocation data for debugging
+
+        if (!city || !country || !loc) {
+            return res.status(400).json({ error: "Location not found" });
+        }
 
         const [lat, lng] = loc.split(",").map(Number);
-        const flagUrl = `https://flagcdn.com/w320/${countryCode.toLowerCase()}.png`;
+        const flagUrl = `https://flagcdn.com/w320/${country.toLowerCase()}.png`;
 
         const newLocation = new Location({
             intendedCity: null,
@@ -72,7 +88,7 @@ router.get("/track", async (req, res) => {
             flagUrl
         });
     } catch (error) {
-        console.error(error);
+        console.error("Error tracking location:", error.message);
         res.status(500).json({ error: "Could not track location" });
     }
 });
@@ -80,15 +96,18 @@ router.get("/track", async (req, res) => {
 // Manual Location Input (Now based on intended country and IP)
 router.post("/track/manual", async (req, res) => {
     try {
-        const { city, country } = req.body;
+        const { city, country, ipAddress } = req.body;
         if (!country) {
             return res.status(400).json({ error: "Country is required" });
         }
+        if (!ipAddress) {
+            return res.status(400).json({ error: "IP address is required" });
+        }
 
-        const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
         let actualCity, actualCountry, lat, lng, flagUrl;
 
-        if (ip === "127.0.0.1" || ip === "::1") {
+        // For local testing, use mock data
+        if (ipAddress === "127.0.0.1" || ipAddress === "::1") {
             const mockData = {
                 city: "Beijing",
                 country: "China",
@@ -100,10 +119,11 @@ router.post("/track/manual", async (req, res) => {
             [lat, lng] = mockData.loc.split(",").map(Number);
             flagUrl = `https://flagcdn.com/w320/${mockData.countryCode.toLowerCase()}.png`;
         } else {
-            const response = await axios.get(`https://ipinfo.io/${ip}/json`);
+            // Fetch geolocation data using ipinfo.io
+            const response = await axios.get(`https://ipinfo.io/${ipAddress}?token=${IPINFO_TOKEN}`);
             const { city: ipCity, country: ipCountry, loc, countryCode } = response.data;
 
-            if (!ipCity || !ipCountry || !loc) {
+            if (!ipCity || !ipCountry || !loc || !countryCode) {
                 return res.status(400).json({ error: "Could not determine your location" });
             }
 
@@ -134,7 +154,7 @@ router.post("/track/manual", async (req, res) => {
             flagUrl
         });
     } catch (error) {
-        console.error(error);
+        console.error("Error tracking location manually:", error.message);
         res.status(500).json({ error: "Could not track location manually" });
     }
 });
@@ -142,28 +162,26 @@ router.post("/track/manual", async (req, res) => {
 // Post a Comment
 router.post("/comment", async (req, res) => {
     try {
-        const { text } = req.body;
+        const { text, ipAddress } = req.body;
+        console.log("User IP Address:", ipAddress); // Log the IP address for debugging
         if (!text) return res.status(400).json({ error: "Comment text is required" });
+        if (!ipAddress) return res.status(400).json({ error: "IP address is required" });
 
-        // Determine the user's country via IP
-        const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
         let country, flagUrl;
 
-        if (ip === "127.0.0.1" || ip === "::1") {
-            country = "China";
-            flagUrl = `https://flagcdn.com/w320/cn.png`;
-        } else {
-            const response = await axios.get(`https://ipinfo.io/${ip}/json`);
-            const { country: ipCountry, countryCode } = response.data;
-
-            if (!ipCountry || !countryCode) {
-                return res.status(400).json({ error: "Could not determine your location" });
-            }
-
-            country = ipCountry;
-            flagUrl = `https://flagcdn.com/w320/${countryCode.toLowerCase()}.png`;
+        // Fetch geolocation data using ipinfo.io
+        const response = await axios.get(`https://ipinfo.io/${ipAddress}?token=${IPINFO_TOKEN}`);
+        console.log("Geolocation data for comment:", response.data);
+        
+        if (!response.data || !response.data.country) {   
+            return res.status(400).json({ error: "Could not determine your location" });
         }
 
+        // Assign values properly
+        country = response.data.country;
+        flagUrl = `https://flagcdn.com/w320/${country.toLowerCase()}.png`;
+
+        // Save comment to the database
         const newComment = new Comment({ text, country, flagUrl });
         await newComment.save();
         res.status(201).json({ message: "Comment posted", country, flagUrl });
@@ -172,6 +190,7 @@ router.post("/comment", async (req, res) => {
         res.status(500).json({ error: "Could not post comment" });
     }
 });
+
 
 // Get All Tracked Locations
 router.get("/locations", async (req, res) => {
