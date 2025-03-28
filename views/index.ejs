@@ -24,25 +24,33 @@
         <h2>🌍 Where Has the Fish Traveled?</h2>
         <div id="map"></div>
     </section>
-    <h2>Track the Fish Manually</h2>
-<form id="manualTrackForm">
-  <input type="text" id="city" placeholder="City" required />
-  <input type="text" id="country" placeholder="Country" required />
-  <input type="number" id="lat" placeholder="Latitude" step="any" required />
-  <input type="number" id="lng" placeholder="Longitude" step="any" required />
-  <button type="submit">Track Location</button>
-</form>
+    <h2>Where Should the Fish Travel Next?</h2>
+    <form id="manualTrackForm">
+        <input type="text" id="city" placeholder="City (optional)" />
+        <select id="country" required>
+            <option value="" disabled selected>Select a Country</option>
+            <% countryList.forEach(country => { %>
+                <option value="<%= country.name %>"><%= country.name %></option>
+            <% }); %>
+        </select>
+        <button type="submit">Send the Fish Here</button>
+    </form>
 
     <!-- 🔹 User Comments Section -->
     <section id="comments">
         <h2>💬 Share Your Thoughts!</h2>
         <textarea id="userComment" placeholder="Type your message here..."></textarea>
-       <center>
-         <button onclick="postComment()">Submit</button>
-       </center>
+        <center>
+            <button onclick="postComment()">Submit</button>
+        </center>
         <div id="commentList">
             <% comments.forEach(comment => { %>
-                <p><%= comment.text %> - <small><%= new Date(comment.timestamp).toLocaleString() %></small></p>
+                <p>
+                    <% if (comment.flagUrl) { %>
+                        <img src="<%= comment.flagUrl %>" alt="<%= comment.country %> flag" class="comment-flag">
+                    <% } %>
+                    <%= comment.text %> - <small><%= new Date(comment.timestamp).toLocaleString() %></small>
+                </p>
             <% }); %>
         </div>
     </section>

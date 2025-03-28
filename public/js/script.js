@@ -60,7 +60,8 @@ document.addEventListener("DOMContentLoaded", async function () {
             const marker = L.marker([loc.lat, loc.lng], { icon: flagMarker })
                 .addTo(map)
                 .bindPopup(`
-                    <b>${loc.city}, ${loc.country}</b><br>
+                    <b>${loc.actualCity}, ${loc.actualCountry}</b><br>
+                    ${loc.intendedCountry ? `Intended: ${loc.intendedCity ? loc.intendedCity + ", " : ""}${loc.intendedCountry}<br>` : ""}
                     <img src="${loc.flagUrl}" width="50">
                 `);
             markers.push(marker);
@@ -95,7 +96,11 @@ document.addEventListener("DOMContentLoaded", async function () {
             const flagMarker = createFlagMarker(data.flagUrl);
             const newMarker = L.marker([data.lat, data.lng], { icon: flagMarker })
                 .addTo(map)
-                .bindPopup(`<b>${data.city}, ${data.country}</b><br><img src="${data.flagUrl}" width="50">`)
+                .bindPopup(`
+                    <b>${data.actualCity}, ${data.actualCountry}</b><br>
+                    ${data.intendedCountry ? `Intended: ${data.intendedCity ? data.intendedCity + ", " : ""}${data.intendedCountry}<br>` : ""}
+                    <img src="${data.flagUrl}" width="50">
+                `)
                 .openPopup();
             markers.push(newMarker);
 
@@ -139,8 +144,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         e.preventDefault();
         const city = document.getElementById("city").value;
         const country = document.getElementById("country").value;
-        const lat = document.getElementById("lat").value;
-        const lng = document.getElementById("lng").value;
         try {
             // Fetch current locations to find the most recent one
             const currentResponse = await fetch("/api/locations");
@@ -154,7 +157,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             const response = await fetch("/api/track/manual", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ city, country, lat, lng })
+                body: JSON.stringify({ city, country })
             });
             const data = await response.json();
             if (!response.ok) throw new Error(data.error || "Manual tracking failed");
@@ -163,7 +166,11 @@ document.addEventListener("DOMContentLoaded", async function () {
             const flagMarker = createFlagMarker(data.flagUrl);
             const newMarker = L.marker([data.lat, data.lng], { icon: flagMarker })
                 .addTo(map)
-                .bindPopup(`<b>${data.city}, ${data.country}</b><br><img src="${data.flagUrl}" width="50">`)
+                .bindPopup(`
+                    <b>${data.actualCity}, ${data.actualCountry}</b><br>
+                    ${data.intendedCountry ? `Intended: ${data.intendedCity ? data.intendedCity + ", " : ""}${data.intendedCountry}<br>` : ""}
+                    <img src="${data.flagUrl}" width="50">
+                `)
                 .openPopup();
             markers.push(newMarker);
 
@@ -218,8 +225,11 @@ document.addEventListener("DOMContentLoaded", async function () {
             // Add the new comment to the commentList div
             const commentList = document.getElementById("commentList");
             const newComment = document.createElement("p");
-            newComment.innerHTML = `${comment} - <small>${new Date().toLocaleString()}</small>`;
-            commentList.prepend(newComment); // Add to the top
+            newComment.innerHTML = `
+                ${data.flagUrl ? `<img src="${data.flagUrl}" alt="${data.country} flag" class="comment-flag">` : ""}
+                ${comment} - <small>${new Date().toLocaleString()}</small>
+            `;
+            commentList.prepend(newComment);
 
             // Clear the textarea
             document.getElementById("userComment").value = "";

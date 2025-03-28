@@ -34,7 +34,7 @@ body {
     padding: 0;
     margin: 0;
     display: flex;
-    gap: 10px; /* Reduced gap for mobile */
+    gap: 10px;
     margin-right: 10%;
 }
 
@@ -45,29 +45,29 @@ body {
 .navbar-menu li a {
     color: white;
     text-decoration: none;
-    font-size: 16px; /* Reduced font size for mobile */
-    padding: 5px; /* Added padding for better touch targets */
+    font-size: 16px;
+    padding: 5px;
 }
 
 @media (max-width: 768px) {
     .navbar-menu {
-        flex-wrap: wrap; /* Allow items to wrap to the next line */
-        justify-content: center; /* Center items on mobile */
+        flex-wrap: wrap;
+        justify-content: center;
     }
 
     .navbar-menu li {
-        display: inline-block; /* Allows width/height to be set */
+        display: inline-block;
     }
 
     .navbar-menu li a {
-        font-size: 14px; /* Further reduced font size */
+        font-size: 14px;
     }
 }
 
 /* Page Headings */
 h1, h2 {
     color: #333;
-    margin-top: 80px; /* To prevent content from being hidden behind the navbar */
+    margin-top: 80px;
 }
 
 /* Home Section */
@@ -93,7 +93,7 @@ h1, h2 {
 
 /* Custom Flag Marker Styles */
 .custom-flag-marker {
-    background: none !important; /* Remove Leaflet's default background */
+    background: none !important;
     border: none !important;
 }
 
@@ -108,9 +108,9 @@ h1, h2 {
     height: 32px;
     background-size: cover;
     background-position: center;
-    border-radius: 50%; /* Makes the flag circular */
-    border: 2px solid #fff; /* White border for contrast */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .pin {
@@ -122,7 +122,7 @@ h1, h2 {
     height: 0;
     border-left: 4px solid transparent;
     border-right: 4px solid transparent;
-    border-top: 8px solid #ff0000; /* Red pin triangle */
+    border-top: 8px solid #ff0000;
 }
 
 /* Manual Track Form */
@@ -131,14 +131,21 @@ h1, h2 {
     justify-content: center;
     gap: 10px;
     margin: 20px 0;
-    flex-wrap: wrap; /* Allow inputs to wrap on smaller screens */
+    flex-wrap: wrap;
 }
 
-#manualTrackForm input {
+#manualTrackForm input,
+#manualTrackForm select {
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 16px;
+    min-width: 150px;
+}
+
+#manualTrackForm select {
+    background-color: #fff;
+    cursor: pointer;
 }
 
 #manualTrackForm button {
@@ -201,6 +208,16 @@ h1, h2 {
     margin: 5px 0;
     border-radius: 4px;
     text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#commentList .comment-flag {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    vertical-align: middle;
 }
 
 #commentList small {
