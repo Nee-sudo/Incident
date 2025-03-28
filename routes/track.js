@@ -6,16 +6,17 @@ const countryCodes = require("../utils/countryCodes"); // Add this
 const router = express.Router();
 
 // Track User Location with IP
+// Track User Location with IP
 router.get("/track", async (req, res) => {
     try {
         const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
 
         if (ip === "127.0.0.1" || ip === "::1") {
             const mockData = {
-                city: "New York",
-                country: "United States",
-                loc: "40.7128,-74.0060",
-                countryCode: "US"
+                city: "Beijing",
+                country: "China",
+                loc: "39.9042,116.4074", // Coordinates for Beijing, China
+                countryCode: "CN"
             };
             const { city, country, loc, countryCode } = mockData;
             const [lat, lng] = loc.split(",").map(Number);
