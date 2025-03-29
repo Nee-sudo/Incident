@@ -286,6 +286,7 @@ footer {
     justify-content: center;
     gap: 15px;
     margin-bottom: 15px;
+    flex-wrap: wrap; /* Ensure responsiveness */
 }
 
 .time-box {
@@ -295,6 +296,8 @@ footer {
     text-align: center;
     min-width: 80px;
     transition: 0.3s;
+    flex: 1 1 100px; /* Allow flexible resizing */
+    max-width: 120px; /* Limit max width */
 }
 
 .time-box:hover {
@@ -317,4 +320,23 @@ footer {
     font-size: 16px;
     margin-top: 10px;
     opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+    #countup {
+        margin: 30px auto;
+        padding: 15px;
+    }
+
+    .time-box span {
+        font-size: 24px; /* Adjust font size for smaller screens */
+    }
+
+    .time-box p {
+        font-size: 12px; /* Adjust font size for smaller screens */
+    }
+
+    .mystery-text {
+        font-size: 14px; /* Adjust font size for smaller screens */
+    }
 }
