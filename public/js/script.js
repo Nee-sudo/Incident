@@ -1,3 +1,5 @@
+const BACKEND_URL = "https://fishonworldtour.up.railway.app"; // Backend URL
+
 document.addEventListener("DOMContentLoaded", async function () {
     // Initialize Map
     var map = L.map("map").setView([20, 80], 2);
@@ -37,7 +39,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
 
         try {
-            const response = await fetch("/api/locations");
+            const response = await fetch(`${BACKEND_URL}/api/locations`); // Use BACKEND_URL
             if (!response.ok) throw new Error("Failed to fetch locations");
             const locations = await response.json();
 
@@ -89,13 +91,13 @@ document.addEventListener("DOMContentLoaded", async function () {
             console.log("Fetched IP:", ipData.ip);
             const ipAddress = ipData.ip;
 
-            const currentResponse = await fetch("/api/locations");
+            const currentResponse = await fetch(`${BACKEND_URL}/api/locations`); // Use BACKEND_URL
             console.log("Current locations response:", currentResponse);
             if (!currentResponse.ok) throw new Error("Failed to fetch current locations");
             const currentLocations = await currentResponse.json();
             console.log("Current locations:", currentLocations);
 
-            const response = await fetch("/api/track", {
+            const response = await fetch(`${BACKEND_URL}/api/track`, { // Use BACKEND_URL
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ ipAddress })
@@ -110,7 +112,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 .addTo(map)
                 .bindPopup(`
                     <b>${data.actualCity}, ${data.actualCountry}</b><br>
-                    ${data.intendedCountry ? `Intended: ${data.intendedCity ? data.intendedCity + ", " : ""}${data.intendedCountry}<br>` : ""}
+                    ${data.intendedCountry ? `Intended: ${loc.intendedCity ? loc.intendedCity + ", " : ""}${loc.intendedCountry}<br>` : ""}
                     <img src="${data.flagUrl}" width="50">
                 `)
                 .openPopup();
@@ -151,10 +153,10 @@ document.addEventListener("DOMContentLoaded", async function () {
             const ipData = await ipResponse.json();
             const ipAddress = ipData.ip;
 
-            const currentResponse = await fetch("/api/locations");
+            const currentResponse = await fetch(`${BACKEND_URL}/api/locations`); // Use BACKEND_URL
             const currentLocations = await currentResponse.json();
 
-            const response = await fetch("/api/track/manual", {
+            const response = await fetch(`${BACKEND_URL}/api/track/manual`, { // Use BACKEND_URL
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ city, country, ipAddress })
@@ -167,7 +169,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 .addTo(map)
                 .bindPopup(`
                     <b>${data.actualCity}, ${data.actualCountry}</b><br>
-                    ${data.intendedCountry ? `Intended: ${data.intendedCity ? data.intendedCity + ", " : ""}${data.intendedCountry}<br>` : ""}
+                    ${data.intendedCountry ? `Intended: ${loc.intendedCity ? loc.intendedCity + ", " : ""}${loc.intendedCountry}<br>` : ""}
                     <img src="${data.flagUrl}" width="50">
                 `)
                 .openPopup();
@@ -206,7 +208,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             if (!ipResponse.ok) throw new Error("Failed to fetch IP address");
             const ipData = await ipResponse.json();
             const ipAddress = ipData.ip;
-            const response = await fetch("/api/comment", {
+            const response = await fetch(`${BACKEND_URL}/api/comment`, { // Use BACKEND_URL
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ text: comment, ipAddress: ipData.ip })

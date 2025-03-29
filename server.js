@@ -3,6 +3,7 @@ const app = express();
 const path = require("path");
 const mongoose = require("mongoose");
 require("dotenv").config();
+const cors = require("cors");
 
 
 // Middleware to serve static files from the public folder
@@ -13,6 +14,12 @@ app.set("view engine", "ejs");
 
 // Middleware to parse the request body
 app.use(express.urlencoded({ extended: true }));
+app.use(cors({
+    origin: ["http://localhost:3000", "https://fishonworldtour.up.railway.app"], // Allow both localhost and deployed frontend
+    methods: ["GET", "POST"],
+    credentials: true
+}));
+
 
 // Middleware to parse JSON bodies
 app.use(express.json());
@@ -40,4 +47,5 @@ app.use("/about", aboutRoute);
 app.use("/api", trackRoutes);
 
 const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
