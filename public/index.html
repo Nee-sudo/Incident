@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Poor Fish's Journey 🐟</title>
+    <link rel="stylesheet" href="./css/styles.css">
+    <!-- Leaflet.js CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+</head>
+<body>
+
+    <!-- 🔹 Navigation -->
+    <!-- Replace the EJS include with static HTML (copy the content of partials/navbar.ejs) -->
+    <nav class="navbar">
+        <div class="navbar-logo">
+            <img src="./images/logo.png" alt="Logo">
+        </div>
+        <ul class="navbar-menu">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#map-section">Map</a></li>
+            <li><a href="#comments">Comments</a></li>
+            <li><a href="#about">About</a></li>
+        </ul>
+    </nav>
+
+    <!-- 🔹 Landing Page -->
+    <section id="home">
+        <h1>🐟 The Poor Fish Wants to See the World!</h1>
+        <img src="index.html" alt="Poor Fish" class="fish-image">
+    </section>
+
+    <!-- 🔹 Live Map Section -->
+    <section id="map-section">
+        <h2>🌍 Where Has the Fish Traveled?</h2>
+        <div id="map"></div>
+    </section>
+    <h2>Where Should the Fish Travel Next?</h2>
+    <form id="manualTrackForm">
+        <input type="text" id="city" placeholder="City (optional)" />
+        <select id="country" required>
+            <option value="" disabled selected>Select a Country</option>
+            <!-- We’ll populate this dynamically in script.js -->
+        </select>
+        <button type="submit">Send the Fish Here</button>
+    </form>
+
+    <!-- 🔹 User Comments Section -->
+    <section id="comments">
+        <h2>💬 Share Your Thoughts!</h2>
+        <textarea id="userComment" placeholder="Type your message here..."></textarea>
+        <center>
+            <button onclick="postComment()">Submit</button>
+        </center>
+        <div id="commentList">
+            <!-- Comments will be populated dynamically -->
+        </div>
+    </section>
+
+    <!-- 🔹 Footer -->
+    <!-- Replace the EJS include with static HTML (copy the content of partials/footer.ejs) -->
+    <footer>
+        <p>&copy; 2025 The Poor Fish's Journey. All rights reserved.</p>
+    </footer>
+
+    <!-- 🔹 Leaflet.js Script -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="./js/script.js"></script>
+
+</body>
+</html>
