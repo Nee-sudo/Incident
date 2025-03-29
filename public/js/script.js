@@ -238,3 +238,30 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     window.postComment = postComment;
 });
+
+// Function to count up from the fish's journey start date
+function startCountUp(startDate) {
+    function updateTimer() {
+        const now = new Date().getTime();
+        const timeElapsed = now - startDate;
+
+        const days = Math.floor(timeElapsed / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((timeElapsed % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((timeElapsed % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeElapsed % (1000 * 60)) / 1000);
+
+        document.getElementById("days").textContent = days < 10 ? "0" + days : days;
+        document.getElementById("hours").textContent = hours < 10 ? "0" + hours : hours;
+        document.getElementById("minutes").textContent = minutes < 10 ? "0" + minutes : minutes;
+        document.getElementById("seconds").textContent = seconds < 10 ? "0" + seconds : seconds;
+    }
+
+    updateTimer();
+    setInterval(updateTimer, 1000);
+}
+
+// Automatically start counting up when the page loads
+document.addEventListener("DOMContentLoaded", function () {
+    const journeyStartDate = new Date("April 01, 2025 00:00:00").getTime(); // Set the start date of the journey
+    startCountUp(journeyStartDate);
+});

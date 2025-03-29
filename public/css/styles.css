@@ -270,3 +270,51 @@ footer {
     text-align: center;
     margin-top: 40px;
 }
+#countup {
+    text-align: center;
+    margin: 50px auto;
+    padding: 20px;
+    background: linear-gradient(135deg, #ff9800, #ff5722);
+    color: white;
+    border-radius: 10px;
+    max-width: 600px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.countup-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.time-box {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 15px 20px;
+    border-radius: 8px;
+    text-align: center;
+    min-width: 80px;
+    transition: 0.3s;
+}
+
+.time-box:hover {
+    transform: scale(1.1);
+}
+
+.time-box span {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.time-box p {
+    margin: 5px 0 0;
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+.mystery-text {
+    font-style: italic;
+    font-size: 16px;
+    margin-top: 10px;
+    opacity: 0.8;
+}
