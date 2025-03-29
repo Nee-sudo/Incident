@@ -47,12 +47,13 @@ document.addEventListener("DOMContentLoaded", async function () {
             // Array to store coordinates for the polyline
             const pathCoordinates = orderedLocations.map(loc => [loc.lat, loc.lng]);
 
-            // Draw a solid blue polyline for the historical path
+            // Draw a dashed blue polyline for the historical path
             if (pathCoordinates.length > 1) {
                 historicalPolyline = L.polyline(pathCoordinates, {
                     color: "blue",
                     weight: 3,
-                    opacity: 0.7
+                    opacity: 0.7,
+                    dashArray: "5, 5"
                 }).addTo(map);
             }
 
@@ -69,10 +70,9 @@ document.addEventListener("DOMContentLoaded", async function () {
                 markers.push(marker);
             });
 
-            // Center the map on the most recent location
-            if (locations.length > 0) {
-                const latestLocation = locations[0];
-                map.setView([latestLocation.lat, latestLocation.lng], 5);
+            // Fit the map to show all markers (the entire network)
+            if (pathCoordinates.length > 0) {
+                map.fitBounds(pathCoordinates, { padding: [50, 50] });
             }
         } catch (error) {
             console.error("Error loading locations:", error.message);
@@ -83,39 +83,28 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Auto Track User Location
     async function trackLocation() {
         try {
-            // Fetch the user's IP address using ipify.org
             const ipResponse = await fetch("https://api.ipify.org?format=json");
             if (!ipResponse.ok) throw new Error("Failed to fetch IP address");
             const ipData = await ipResponse.json();
             console.log("Fetched IP:", ipData.ip);
             const ipAddress = ipData.ip;
 
-            // Fetch current locations to find the most recent one
             const currentResponse = await fetch("/api/locations");
             console.log("Current locations response:", currentResponse);
             if (!currentResponse.ok) throw new Error("Failed to fetch current locations");
             const currentLocations = await currentResponse.json();
             console.log("Current locations:", currentLocations);
-            // Find the most recent location from the current locations
-            let mostRecentLocation = null;
-            if (currentLocations.length > 0) {
-                mostRecentLocation = currentLocations[0];
-                console.log("Most recent location:", mostRecentLocation);
-            }
 
-            // Add the new location by sending the IP address to the backend
             const response = await fetch("/api/track", {
-                method: "POST", // Changed to POST to send the IP address
+                method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ ipAddress }) // Use the fetched IP address here
+                body: JSON.stringify({ ipAddress })
             });
             const data = await response.json();
             console.log("Track location response:", data);
-            // Check if the response is ok and handle errors
             if (!response.ok) throw new Error(data.error || "Tracking failed");
             console.log("Tracked Location:", data);
 
-            // Add marker for the new location
             const flagMarker = createFlagMarker(data.flagUrl);
             const newMarker = L.marker([data.lat, data.lng], { icon: flagMarker })
                 .addTo(map)
@@ -127,19 +116,6 @@ document.addEventListener("DOMContentLoaded", async function () {
                 .openPopup();
             markers.push(newMarker);
 
-            // Draw a dotted blue line from the most recent location to the new location
-            if (mostRecentLocation) {
-                const recentCoords = [mostRecentLocation.lat, mostRecentLocation.lng];
-                const newCoords = [data.lat, data.lng];
-                L.polyline([recentCoords, newCoords], {
-                    color: "blue",
-                    weight: 3,
-                    opacity: 0.7,
-                    dashArray: "5, 10"
-                }).addTo(map);
-            }
-
-            // Update the historical path directly
             const updatedLocations = [...currentLocations, data].reverse();
             const pathCoordinates = updatedLocations.map(loc => [loc.lat, loc.lng]);
             if (historicalPolyline) {
@@ -149,18 +125,19 @@ document.addEventListener("DOMContentLoaded", async function () {
                 historicalPolyline = L.polyline(pathCoordinates, {
                     color: "blue",
                     weight: 3,
-                    opacity: 0.7
+                    opacity: 0.7,
+                    dashArray: "5, 5"
                 }).addTo(map);
             }
 
-            // Center the map on the new location
-            map.setView([data.lat, data.lng], 13);
+            if (pathCoordinates.length > 0) {
+                map.fitBounds(pathCoordinates, { padding: [50, 50] });
+            }
         } catch (error) {
             console.error("Error tracking location:", error.message);
             alert("Could not track your location. Please try manual input.");
         }
     }
-    // Call trackLocation immediately when the page loads
     trackLocation();
 
     // Manual Location Input
@@ -169,21 +146,14 @@ document.addEventListener("DOMContentLoaded", async function () {
         const city = document.getElementById("city").value;
         const country = document.getElementById("country").value;
         try {
-            // Fetch the user's IP address using ipify.org
             const ipResponse = await fetch("https://api.ipify.org?format=json");
             if (!ipResponse.ok) throw new Error("Failed to fetch IP address");
             const ipData = await ipResponse.json();
             const ipAddress = ipData.ip;
 
-            // Fetch current locations to find the most recent one
             const currentResponse = await fetch("/api/locations");
             const currentLocations = await currentResponse.json();
-            let mostRecentLocation = null;
-            if (currentLocations.length > 0) {
-                mostRecentLocation = currentLocations[0];
-            }
 
-            // Add the new manual location
             const response = await fetch("/api/track/manual", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -192,7 +162,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             const data = await response.json();
             if (!response.ok) throw new Error(data.error || "Manual tracking failed");
 
-            // Add marker for the new location
             const flagMarker = createFlagMarker(data.flagUrl);
             const newMarker = L.marker([data.lat, data.lng], { icon: flagMarker })
                 .addTo(map)
@@ -204,19 +173,6 @@ document.addEventListener("DOMContentLoaded", async function () {
                 .openPopup();
             markers.push(newMarker);
 
-            // Draw a dotted blue line from the most recent location to the new location
-            if (mostRecentLocation) {
-                const recentCoords = [mostRecentLocation.lat, mostRecentLocation.lng];
-                const newCoords = [data.lat, data.lng];
-                L.polyline([recentCoords, newCoords], {
-                    color: "blue",
-                    weight: 3,
-                    opacity: 0.7,
-                    dashArray: "5, 10"
-                }).addTo(map);
-            }
-
-            // Update the historical path directly
             const updatedLocations = [...currentLocations, data].reverse();
             const pathCoordinates = updatedLocations.map(loc => [loc.lat, loc.lng]);
             if (historicalPolyline) {
@@ -226,12 +182,14 @@ document.addEventListener("DOMContentLoaded", async function () {
                 historicalPolyline = L.polyline(pathCoordinates, {
                     color: "blue",
                     weight: 3,
-                    opacity: 0.7
+                    opacity: 0.7,
+                    dashArray: "5, 5"
                 }).addTo(map);
             }
 
-            // Center the map on the new location
-            map.setView([data.lat, data.lng], 13);
+            if (pathCoordinates.length > 0) {
+                map.fitBounds(pathCoordinates, { padding: [50, 50] });
+            }
         } catch (error) {
             console.error("Error tracking manually:", error.message);
             alert(error.message);
@@ -251,13 +209,12 @@ document.addEventListener("DOMContentLoaded", async function () {
             const response = await fetch("/api/comment", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ text: comment,ipAddress: ipData.ip }) // Include the IP address in the comment
+                body: JSON.stringify({ text: comment, ipAddress: ipData.ip })
             });
             const data = await response.json();
-            console.log("Post comment response:", data);
-            console.log("flagUrl:", data.flagUrl); // Log the flag URL for debugging    
-            console.log("country:", data.country); // Log the country for debugging
-            // Check if the response is ok and handle errors
+            console.log("Post comment response:", data); // Debug: Check the response
+            console.log("flagUrl:", data.flagUrl); // Debug: Ensure flagUrl is present
+            console.log("country:", data.country); // Debug: Ensure country is present
             if (!response.ok) throw new Error(data.error || "Failed to post comment");
 
             // Add the new comment to the commentList div
