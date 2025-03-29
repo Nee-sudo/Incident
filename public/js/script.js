@@ -235,9 +235,11 @@ document.addEventListener("DOMContentLoaded", async function () {
             alert("Failed to post comment. Please try again.");
         }
     }
-
+    
     window.postComment = postComment;
 });
+
+
 
 // Function to count up from the fish's journey start date
 function startCountUp(startDate) {
@@ -265,3 +267,31 @@ document.addEventListener("DOMContentLoaded", function () {
     const journeyStartDate = new Date("April 01, 2025 00:00:00").getTime(); // Set the start date of the journey
     startCountUp(journeyStartDate);
 });
+
+
+// Fetch and Display All Comments
+async function loadComments() {
+    try {
+        const response = await fetch(`${BACKEND_URL}/api/comments`); // Use BACKEND_URL
+        if (!response.ok) throw new Error("Failed to fetch comments");
+        const comments = await response.json();
+
+        const commentList = document.getElementById("commentList");
+        commentList.innerHTML = ""; // Clear existing comments
+
+        comments.forEach(comment => {
+            const commentElement = document.createElement("p");
+            commentElement.innerHTML = `
+                ${comment.flagUrl ? `<img src="${comment.flagUrl}" alt="${comment.country} flag" class="comment-flag">` : ""}
+                ${comment.text} - <small>${new Date(comment.timestamp).toLocaleString()}</small>
+            `;
+            commentList.appendChild(commentElement);
+        });
+    } catch (error) {
+        console.error("Error loading comments:", error.message);
+        alert("Failed to load comments. Please try again.");
+    }
+}
+
+// Automatically load comments when the page loads
+document.addEventListener("DOMContentLoaded", loadComments);

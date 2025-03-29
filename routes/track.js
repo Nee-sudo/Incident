@@ -191,6 +191,17 @@ router.post("/comment", async (req, res) => {
     }
 });
 
+// Get All Comments
+router.get("/comments", async (req, res) => {
+    try {
+        const comments = await Comment.find().sort({ timestamp: -1 });
+        res.json(comments);
+    } catch (error) {
+        console.error("Error fetching comments:", error.message);
+        res.status(500).json({ error: "Could not fetch comments" });
+    }
+});
+
 
 // Get All Tracked Locations
 router.get("/locations", async (req, res) => {
