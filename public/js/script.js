@@ -30,6 +30,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Fetch and Display Locations with Flags
     async function loadLocations() {
+        // Clear existing markers and polyline
         markers.forEach(marker => map.removeLayer(marker));
         markers.length = 0;
         if (historicalPolyline) {
@@ -38,13 +39,17 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
 
         try {
-            const response = await fetch(`${BACKEND_URL}/api/locations`);
+            const response = await fetch(`${BACKEND_URL}/api/locations`); // Use BACKEND_URL
             if (!response.ok) throw new Error("Failed to fetch locations");
             const locations = await response.json();
 
+            // Reverse locations to draw the path from oldest to newest
             const orderedLocations = locations.reverse();
+
+            // Array to store coordinates for the polyline
             const pathCoordinates = orderedLocations.map(loc => [loc.lat, loc.lng]);
 
+            // Draw a dashed blue polyline for the historical path
             if (pathCoordinates.length > 1) {
                 historicalPolyline = L.polyline(pathCoordinates, {
                     color: "blue",
@@ -54,6 +59,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 }).addTo(map);
             }
 
+            // Add markers with custom flag shape for each location
             orderedLocations.forEach(loc => {
                 const flagMarker = createFlagMarker(loc.flagUrl);
                 const marker = L.marker([loc.lat, loc.lng], { icon: flagMarker })
@@ -66,6 +72,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 markers.push(marker);
             });
 
+            // Fit the map to show all markers (the entire network)
             if (pathCoordinates.length > 0) {
                 map.fitBounds(pathCoordinates, { padding: [50, 50] });
             }
@@ -75,166 +82,121 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
     loadLocations();
 
-    // Auto Track User Location with Custom Popup and Detailed Geocoding
-    
-        // Auto Track User Location with Custom Popup and Detailed Geocoding
-        async function trackLocation() {
-            const popup = document.createElement("div");
-            popup.id = "location-popup";
-            popup.innerHTML = `
-                <div style="
-                    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-                    background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-                    text-align: center; font-family: Arial, sans-serif; z-index: 1000;
-                    max-width: 300px;">
-                    <h3 style="color: #2c3e50; margin: 0 0 15px;">Fish Needs Your Location!</h3>
-                    <p style="color: #7=in8c8d; margin: 0 0 20px;">To visit your place, this fish needs your exact location. Allow access?</p>
-                    <button id="allow-btn" style="
-                        background: #3498db; color: white; border: none; padding: 10px 20px;
-                        border-radius: 5px; cursor: pointer; margin-right: 10px;">Allow</button>
-                    <button id="deny-btn" style="
-                        background: #e74c3c; color: white; border: none; padding: 10px 20px;
-                        border-radius: 5px; cursor: pointer;">Deny</button>
-                </div>
-            `;
-            document.body.appendChild(popup);
-    
-            const allowBtn = document.getElementById("allow-btn");
-            const denyBtn = document.getElementById("deny-btn");
-    
-            return new Promise((resolve) => {
-                allowBtn.onclick = async () => {
-                    document.body.removeChild(popup);
-                    if (navigator.geolocation) {
-                        navigator.geolocation.getCurrentPosition(async (position) => {
-                            const { latitude, longitude } = position.coords;
-                            try {
-                                const geocodeResponse = await fetch(
-                                    `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
-                                );
-                                if (!geocodeResponse.ok) throw new Error("Failed to reverse geocode");
-                                const geocodeData = await geocodeResponse.json();
-    
-                                const detailedLocation = {
-                                    latitude,
-                                    longitude,
-                                    address: geocodeData.address || {},
-                                    city: geocodeData.address.city || geocodeData.address.town || geocodeData.address.village || "",
-                                    country: geocodeData.address.country || "",
-                                    postalCode: geocodeData.address.postcode || "",
-                                    street: geocodeData.address.road || ""
-                                };
-    
-                                const response = await fetch(`${BACKEND_URL}/api/track`, {
-                                    method: "POST",
-                                    headers: { "Content-Type": "application/json" },
-                                    body: JSON.stringify(detailedLocation)
-                                });
-                                const data = await response.json();
-                                if (!response.ok) throw new Error(data.error || "Tracking failed");
-                                resolve(data);
-                            } catch (error) {
-                                console.error("Error with detailed location:", error.message);
-                                resolve(await fallbackToIPTracking());
-                            }
-                        }, async (geoError) => {
-                            console.error("Geolocation permission denied by browser:", geoError.message);
-                            alert("Geolocation access denied. Falling back to IP-based tracking.");
-                            resolve(await fallbackToIPTracking());
-                        });
-                    } else {
-                        alert("Geolocation not supported by your browser. Using IP-based tracking.");
-                        resolve(await fallbackToIPTracking());
-                    }
-                };
-    
-                denyBtn.onclick = async () => {
-                    document.body.removeChild(popup);
-                    alert("Location access denied. Using IP-based tracking instead.");
-                    resolve(await fallbackToIPTracking());
-                };
-            }).then(async (data) => {
-                const currentResponse = await fetch(`${BACKEND_URL}/api/locations`);
-                if (!currentResponse.ok) throw new Error("Failed to fetch current locations");
-                const currentLocations = await currentResponse.json();
-    
-                const flagMarker = createFlagMarker(data.flagUrl);
-                const newMarker = L.marker([data.lat, data.lng], { icon: flagMarker })
-                    .addTo(map)
-                    .bindPopup(`
-                        <b>${data.actualCity}, ${data.actualCountry}</b><br>
-                        ${data.intendedCountry ? `Intended: ${data.intendedCity ? data.intendedCity + ", " : ""}${data.intendedCountry}<br>` : ""}
-                        <img src="${data.flagUrl}" width="50">
-                    `)
-                    .openPopup();
-                markers.push(newMarker);
-    
-                const updatedLocations = [...currentLocations, data].reverse();
-                const pathCoordinates = updatedLocations.map(loc => [loc.lat, loc.lng]);
-                if (historicalPolyline) {
-                    map.removeLayer(historicalPolyline);
-                }
-                if (pathCoordinates.length > 1) {
-                    historicalPolyline = L.polyline(pathCoordinates, {
-                        color: "blue",
-                        weight: 3,
-                        opacity: 0.7,
-                        dashArray: "5, 5"
-                    }).addTo(map);
-                }
-    
-                if (pathCoordinates.length > 0) {
-                    map.fitBounds(pathCoordinates, { padding: [50, 50] });
-                }
-            }).catch(error => {
-                console.error("Final tracking error:", error.message);
-                alert(`Tracking failed: ${error.message}. Please try again later.`);
+    // Auto Track User Location
+    async function trackLocation() {
+        try {
+            const ipResponse = await fetch("https://api.ipify.org?format=json");
+            if (!ipResponse.ok) throw new Error("Failed to fetch IP address");
+            const ipData = await ipResponse.json();
+            console.log("Fetched IP:", ipData.ip);
+            const ipAddress = ipData.ip;
+
+            const currentResponse = await fetch(`${BACKEND_URL}/api/locations`); // Use BACKEND_URL
+            console.log("Current locations response:", currentResponse);
+            if (!currentResponse.ok) throw new Error("Failed to fetch current locations");
+            const currentLocations = await currentResponse.json();
+            console.log("Current locations:", currentLocations);
+
+            const response = await fetch(`${BACKEND_URL}/api/track`, { // Use BACKEND_URL
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ipAddress })
             });
-        }
-    
-        // Fallback to original IP-based tracking
-        async function fallbackToIPTracking() {
-            try {
-                const ipResponse = await fetch("https://api.ipify.org?format=json");
-                if (!ipResponse.ok) throw new Error("Failed to fetch IP address");
-                const ipData = await ipResponse.json();
-                const ipAddress = ipData.ip;
-    
-                const response = await fetch(`${BACKEND_URL}/api/track`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ ipAddress })
-                });
-                const data = await response.json();
-                if (!response.ok) throw new Error(data.error || "IP-based tracking failed");
-                return data;
-            } catch (error) {
-                throw new Error(`IP tracking error: ${error.message}`);
+            const data = await response.json();
+            console.log("Track location response:", data);
+            if (!response.ok) throw new Error(data.error || "Tracking failed");
+            console.log("Tracked Location:", data);
+
+            const flagMarker = createFlagMarker(data.flagUrl);
+            const newMarker = L.marker([data.lat, data.lng], { icon: flagMarker })
+                .addTo(map)
+                .bindPopup(`
+                    <b>${data.actualCity}, ${data.actualCountry}</b><br>
+                    ${data.intendedCountry ? `Intended: ${loc.intendedCity ? loc.intendedCity + ", " : ""}${loc.intendedCountry}<br>` : ""}
+                    <img src="${data.flagUrl}" width="50">
+                `)
+                .openPopup();
+            markers.push(newMarker);
+
+            const updatedLocations = [...currentLocations, data].reverse();
+            const pathCoordinates = updatedLocations.map(loc => [loc.lat, loc.lng]);
+            if (historicalPolyline) {
+                map.removeLayer(historicalPolyline);
             }
+            if (pathCoordinates.length > 1) {
+                historicalPolyline = L.polyline(pathCoordinates, {
+                    color: "blue",
+                    weight: 3,
+                    opacity: 0.7,
+                    dashArray: "5, 5"
+                }).addTo(map);
+            }
+
+            if (pathCoordinates.length > 0) {
+                map.fitBounds(pathCoordinates, { padding: [50, 50] });
+            }
+        } catch (error) {
+            console.error("Error tracking location:", error.message);
+            alert("Could not track your location. Please try manual input.");
         }
-    
-     
-    
-        // ... (rest of the code remains unchanged) ...
-
-    // Fallback to original IP-based tracking
-    async function fallbackToIPTracking() {
-        const ipResponse = await fetch("https://api.ipify.org?format=json");
-        if (!ipResponse.ok) throw new Error("Failed to fetch IP address");
-        const ipData = await ipResponse.json();
-        const ipAddress = ipData.ip;
-
-        const response = await fetch(`${BACKEND_URL}/api/track`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ ipAddress })
-        });
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error || "Tracking failed");
-        return data;
     }
-
     trackLocation();
+
+    // Manual Location Input
+    // document.getElementById("manualTrackForm").addEventListener("submit", async (e) => {
+    //     e.preventDefault();
+    //     const city = document.getElementById("city").value;
+    //     const country = document.getElementById("country").value;
+    //     try {
+    //         const ipResponse = await fetch("https://api.ipify.org?format=json");
+    //         if (!ipResponse.ok) throw new Error("Failed to fetch IP address");
+    //         const ipData = await ipResponse.json();
+    //         const ipAddress = ipData.ip;
+
+    //         const currentResponse = await fetch(`${BACKEND_URL}/api/locations`); // Use BACKEND_URL
+    //         const currentLocations = await currentResponse.json();
+
+    //         const response = await fetch(`${BACKEND_URL}/api/track/manual`, { // Use BACKEND_URL
+    //             method: "POST",
+    //             headers: { "Content-Type": "application/json" },
+    //             body: JSON.stringify({ city, country, ipAddress })
+    //         });
+    //         const data = await response.json();
+    //         if (!response.ok) throw new Error(data.error || "Manual tracking failed");
+
+    //         const flagMarker = createFlagMarker(data.flagUrl);
+    //         const newMarker = L.marker([data.lat, data.lng], { icon: flagMarker })
+    //             .addTo(map)
+    //             .bindPopup(`
+    //                 <b>${data.actualCity}, ${data.actualCountry}</b><br>
+    //                 ${data.intendedCountry ? `Intended: ${loc.intendedCity ? loc.intendedCity + ", " : ""}${loc.intendedCountry}<br>` : ""}
+    //                 <img src="${data.flagUrl}" width="50">
+    //             `)
+    //             .openPopup();
+    //         markers.push(newMarker);
+
+    //         const updatedLocations = [...currentLocations, data].reverse();
+    //         const pathCoordinates = updatedLocations.map(loc => [loc.lat, loc.lng]);
+    //         if (historicalPolyline) {
+    //             map.removeLayer(historicalPolyline);
+    //         }
+    //         if (pathCoordinates.length > 1) {
+    //             historicalPolyline = L.polyline(pathCoordinates, {
+    //                 color: "blue",
+    //                 weight: 3,
+    //                 opacity: 0.7,
+    //                 dashArray: "5, 5"
+    //             }).addTo(map);
+    //         }
+
+    //         if (pathCoordinates.length > 0) {
+    //             map.fitBounds(pathCoordinates, { padding: [50, 50] });
+    //         }
+    //     } catch (error) {
+    //         console.error("Error tracking manually:", error.message);
+    //         alert(error.message);
+    //     }
+    // });
 
     // Post a New Comment
     async function postComment() {
@@ -246,14 +208,18 @@ document.addEventListener("DOMContentLoaded", async function () {
             if (!ipResponse.ok) throw new Error("Failed to fetch IP address");
             const ipData = await ipResponse.json();
             const ipAddress = ipData.ip;
-            const response = await fetch(`${BACKEND_URL}/api/comment`, {
+            const response = await fetch(`${BACKEND_URL}/api/comment`, { // Use BACKEND_URL
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ text: comment, ipAddress: ipData.ip })
             });
             const data = await response.json();
+            console.log("Post comment response:", data); // Debug: Check the response
+            console.log("flagUrl:", data.flagUrl); // Debug: Ensure flagUrl is present
+            console.log("country:", data.country); // Debug: Ensure country is present
             if (!response.ok) throw new Error(data.error || "Failed to post comment");
 
+            // Add the new comment to the commentList div
             const commentList = document.getElementById("commentList");
             const newComment = document.createElement("p");
             newComment.innerHTML = `
@@ -262,6 +228,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             `;
             commentList.prepend(newComment);
 
+            // Clear the textarea
             document.getElementById("userComment").value = "";
         } catch (error) {
             console.error("Error posting comment:", error.message);
@@ -271,6 +238,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     
     window.postComment = postComment;
 });
+
+
 
 // Function to count up from the fish's journey start date
 function startCountUp(startDate) {
@@ -295,19 +264,20 @@ function startCountUp(startDate) {
 
 // Automatically start counting up when the page loads
 document.addEventListener("DOMContentLoaded", function () {
-    const journeyStartDate = new Date("April 01, 2025 00:00:00").getTime();
+    const journeyStartDate = new Date("April 01, 2025 00:00:00").getTime(); // Set the start date of the journey
     startCountUp(journeyStartDate);
 });
+
 
 // Fetch and Display All Comments
 async function loadComments() {
     try {
-        const response = await fetch(`${BACKEND_URL}/api/comments`);
+        const response = await fetch(`${BACKEND_URL}/api/comments`); // Use BACKEND_URL
         if (!response.ok) throw new Error("Failed to fetch comments");
         const comments = await response.json();
 
         const commentList = document.getElementById("commentList");
-        commentList.innerHTML = "";
+        commentList.innerHTML = ""; // Clear existing comments
 
         comments.forEach(comment => {
             const commentElement = document.createElement("p");
@@ -325,3 +295,43 @@ async function loadComments() {
 
 // Automatically load comments when the page loads
 document.addEventListener("DOMContentLoaded", loadComments);
+
+    // Post a New Comment
+    async function postComment() {
+        let comment = document.getElementById("userComment").value;
+        if (comment.trim() === "") return alert("Please write something!");
+
+        try {
+            const ipResponse = await fetch("https://api.ipify.org?format=json");
+            if (!ipResponse.ok) throw new Error("Failed to fetch IP address");
+            const ipData = await ipResponse.json();
+            const ipAddress = ipData.ip;
+            const response = await fetch(`${BACKEND_URL}/api/comment`, { // Use BACKEND_URL
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text: comment, ipAddress: ipData.ip })
+            });
+            const data = await response.json();
+            console.log("Post comment response:", data); // Debug: Check the response
+            console.log("flagUrl:", data.flagUrl); // Debug: Ensure flagUrl is present
+            console.log("country:", data.country); // Debug: Ensure country is present
+            if (!response.ok) throw new Error(data.error || "Failed to post comment");
+
+            // Add the new comment to the commentList div
+            const commentList = document.getElementById("commentList");
+            const newComment = document.createElement("p");
+            newComment.innerHTML = `
+                ${data.flagUrl ? `<img src="${data.flagUrl}" alt="${data.country} flag" class="comment-flag">` : ""}
+                ${comment} - <small>${new Date().toLocaleString()}</small>
+            `;
+            commentList.prepend(newComment);
+
+            // Clear the textarea
+            document.getElementById("userComment").value = "";
+        } catch (error) {
+            console.error("Error posting comment:", error.message);
+            alert("Failed to post comment. Please try again.");
+        }
+    }
+    
+    window.postComment = postComment;
