@@ -53,9 +53,9 @@ document.addEventListener("DOMContentLoaded", async function () {
             if (pathCoordinates.length > 1) {
                 historicalPolyline = L.polyline(pathCoordinates, {
                     color: "blue",
-                    weight: 3,
+                    weight: 2,
                     opacity: 0.7,
-                    dashArray: "5, 5"
+                    dashArray: "2, 2"
                 }).addTo(map);
             }
 
@@ -126,9 +126,9 @@ document.addEventListener("DOMContentLoaded", async function () {
             if (pathCoordinates.length > 1) {
                 historicalPolyline = L.polyline(pathCoordinates, {
                     color: "blue",
-                    weight: 3,
+                    weight: 1,
                     opacity: 0.7,
-                    dashArray: "5, 5"
+                    dashArray: "2, 2"
                 }).addTo(map);
             }
 
