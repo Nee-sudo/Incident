@@ -9,7 +9,14 @@ const locationSchema = new mongoose.Schema({
     lat: Number, // Actual latitude from IP
     lng: Number, // Actual longitude from IP
     flagUrl: String, // Flag URL based on actual country
-    timestamp: { type: Date, default: Date.now }
+    timestamp: { type: Date, default: Date.now },
+    latitude: Number,
+    longitude: Number,
+    address: { type: Object, default: {} },
+    city: { type: String, default: "" },
+    country: { type: String, default: "" },
+    postalCode: { type: String, default: "" },
+    street: { type: String, default: "" }
 });
 
 module.exports = mongoose.model("Location", locationSchema);

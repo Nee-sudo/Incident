@@ -12,6 +12,8 @@ const IPINFO_TOKEN = "032783179f989d"; // Sign up at ipinfo.io to get a free tok
 router.post("/track", async (req, res) => {
     try {
         const { ipAddress } = req.body;
+        console.log("Actual body:", req.body); // Log the entire request body for debugging
+        console.log("Request Headers:", req.headers); // Log the request headers for debugging
         console.log("IP Address:", ipAddress); // Log the IP address for debugging
 
         if (!ipAddress) {
@@ -58,6 +60,7 @@ router.post("/track", async (req, res) => {
         // Fetch geolocation data using ipinfo.io
         const response = await axios.get(`https://ipinfo.io/${ipAddress}?token=${IPINFO_TOKEN}`);
         const { city, country, loc, countryCode } = response.data;
+        console.log("Detailed Location Data:",response.detailedLocation); // Log the detailed location data for debugging
         console.log("Geolocation data:", response.data); // Log the geolocation data for debugging
 
         if (!city || !country || !loc) {
@@ -74,7 +77,14 @@ router.post("/track", async (req, res) => {
             actualCountry: country,
             lat,
             lng,
-            flagUrl
+            flagUrl,
+            latitude: lat,
+            longitude: lng,
+            address: geocodeData.address || {},
+            city: geocodeData.address.city || geocodeData.address.town || geocodeData.address.village || "",
+            country: geocodeData.address.country || "",
+            postalCode: geocodeData.address.postcode || "",
+            street: geocodeData.address.road || ""
         });
         await newLocation.save();
 
