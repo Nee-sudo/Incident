@@ -680,3 +680,73 @@ footer {
         font-size: 16px;
     }
 }
+
+section {
+    background: linear-gradient(135deg, #f9f9f9, #eaeaea);
+    padding: 40px 20px;
+    margin: 20px auto;
+    border-radius: 12px;
+    max-width: 800px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    text-align: left;
+    line-height: 1.8;
+    font-size: 16px;
+    color: #333;
+}
+
+section h2 {
+    text-align: center;
+    color: #0073e6;
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+section p {
+    margin-bottom: 15px;
+    color: #555;
+}
+
+section .check-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    padding: 10px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+section .check-option input[type="checkbox"] {
+    transform: scale(1.2);
+    margin-right: 10px;
+}
+
+section .check-option label {
+    font-size: 16px;
+    color: #333;
+}
+
+@media (max-width: 768px) {
+    section {
+        padding: 20px;
+    }
+
+    section h2 {
+        font-size: 20px;
+    }
+
+    section p {
+        font-size: 14px;
+    }
+
+    section .check-option {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    section .check-option label {
+        font-size: 14px;
+    }
+}
