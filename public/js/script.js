@@ -1,4 +1,4 @@
-const BACKEND_URL = "http://localhost:3000"; // Backend URL
+const BACKEND_URL = "https://fishonworldtour.up.railway.app"; // Backend URL
 
 document.addEventListener("DOMContentLoaded", async function () {
     // Initialize Map
