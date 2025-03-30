@@ -63,19 +63,26 @@
         <h2>🌍 Where Has the Fish Traveled?</h2>
         <div id="map"></div>
     </section>
-    <h2>Where Should the Fish Travel Next?</h2>
-    <form id="manualTrackForm">
-        <input type="text" id="city" placeholder="City (optional)" />
-        <select id="country" required>
-            <option value="" disabled selected>Select a Country</option>
-            <!-- We’ll populate this dynamically in script.js -->
-        </select>
-        <button type="submit">Send the Fish Here</button>
-    </form>
+    <h2>Encourage the Fish</h2>
+    <section id="motivate-fish">
+        <h3>Motivate the Fish!</h3>
+        <p>Select a motivational message to inspire the fish on its journey:</p>
+        <form id="motivationForm">
+            <select id="motivation" required>
+                <option value="" disabled selected>Select a message</option>
+                <option value="keepSwimming">"Keep swimming, no matter how strong the current!"</option>
+                <option value="dreamBig">"Dream big, little fish. The ocean is just the beginning!"</option>
+                <option value="neverGiveUp">"Never give up, even when the waves get rough!"</option>
+                <option value="reachForStars">"Reach for the stars, even if you're in the water!"</option>
+                <option value="believeInYourself">"Believe in yourself, and you'll go further than you ever imagined!"</option>
+            </select>
+            <button type="submit">Send Motivation</button>
+        </form>
+    </section>
 
     <!-- 🔹 User Comments Section -->
     <section id="comments">
-        <h2>💬 Share Your Thoughts!</h2>
+        <h2>💬 Encourage the fish </h2>
         <textarea id="userComment" placeholder="Type your message here..."></textarea>
         <center>
             <button onclick="postComment()">Submit</button>

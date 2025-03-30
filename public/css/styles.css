@@ -340,3 +340,343 @@ footer {
         font-size: 14px; /* Adjust font size for smaller screens */
     }
 }
+
+#motivate-fish {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    text-align: center;
+  }
+  
+  #motivate-fish h3 {
+    margin-bottom: 15px;
+    color: #333;
+  }
+  
+  #motivate-fish p {
+    margin-bottom: 10px;
+    color: #666;
+  }
+  
+  #motivationForm {
+    display: flex;
+    flex-direction: column; /* Stack elements vertically on mobile */
+    align-items: center; /* Center items */
+  }
+  
+  #motivation {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  
+  #motivationForm button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  #motivationForm button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Responsive Styles */
+  @media (min-width: 768px) { /* Desktop styles */
+    #motivationForm {
+      flex-direction: row; /* Align elements horizontally on desktop */
+      justify-content: center; /* Space elements evenly */
+    }
+  
+    #motivation {
+      width: 60%; /* Adjust width for desktop */
+      margin-right: 10px; /* Add spacing between select and button */
+      margin-bottom: 0;
+    }
+  
+    #motivationForm button {
+      width: auto;
+    }
+  }
+  
+  @media (max-width: 480px) { /* Mobile specific styles */
+      #motivate-fish{
+          padding: 10px;
+          margin: 10px auto;
+      }
+  
+      #motivate-fish h3{
+          font-size: 1.2em;
+      }
+      #motivate-fish p{
+          font-size: .9em;
+      }
+  
+      #motivation{
+          font-size: .9em;
+      }
+  
+      #motivationForm button{
+          font-size: .9em;
+          padding: 8px 16px;
+      }
+  }
+
+/* Dream Section Styling */
+#dream {
+    background: linear-gradient(135deg, #e0f7fa, #b2ebf2);
+    padding: 40px 20px;
+    margin: 20px auto;
+    border-radius: 10px;
+    max-width: 800px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    text-align: left;
+    line-height: 1.8;
+}
+
+#dream h2 {
+    text-align: center;
+    color: #00796b;
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+#dream p {
+    color: #004d40;
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+#dream strong {
+    color: #00796b;
+    font-weight: bold;
+}
+
+@media (max-width: 768px) {
+    #dream {
+        padding: 20px;
+    }
+
+    #dream h2 {
+        font-size: 24px;
+    }
+
+    #dream p {
+        font-size: 16px;
+    }
+}
+
+#goal {
+    background: linear-gradient(135deg, #f0f8ff, #e6f7ff);
+    padding: 40px 20px;
+    margin: 20px auto;
+    border-radius: 10px;
+    max-width: 800px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    text-align: left;
+    line-height: 1.8;
+}
+
+#goal h2 {
+    text-align: center;
+    color: #0073e6;
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+#goal p {
+    color: #004d99;
+    font-size: 18px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.goal-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.goal-list li {
+    font-size: 16px;
+    padding: 10px;
+    margin: 5px 0;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+}
+
+.goal-list input {
+    margin-right: 10px;
+    transform: scale(1.2);
+}
+
+.goal-list hr {
+    border: none;
+    border-top: 1px solid #ccc;
+    margin: 15px 0;
+}
+
+@media (max-width: 768px) {
+    #goal {
+        padding: 20px;
+    }
+
+    #goal h2 {
+        font-size: 24px;
+    }
+
+    #goal p {
+        font-size: 16px;
+    }
+
+    .goal-list li {
+        font-size: 14px;
+        padding: 8px;
+    }
+}
+
+
+#comments {
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    padding: 30px;
+    margin: 30px auto;
+    max-width: 90%;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+#comments h2 {
+    color: #0d47a1;
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+#userComment {
+    width: 95%;
+    height: 120px;
+    margin: 15px auto;
+    padding: 15px;
+    font-size: 16px;
+    border: 1px solid #90caf9;
+    border-radius: 8px;
+    resize: none;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#comments button {
+    background: #1e88e5;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+#comments button:hover {
+    background: #1565c0;
+    transform: scale(1.05);
+}
+
+#commentList {
+    margin-top: 25px;
+    text-align: left;
+    padding: 10px;
+    background: #e3f2fd;
+    border-radius: 8px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#commentList p {
+    background-color: #ffffff;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+#commentList .comment-flag {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid #90caf9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#commentList small {
+    color: #666;
+    font-size: 14px;
+    margin-left: auto;
+    opacity: 0.8;
+}
+
+#about {
+    background: linear-gradient(135deg, #f0f8ff, #e6f7ff);
+    padding: 40px 30px;
+    margin: 30px auto;
+    border-radius: 12px;
+    max-width: 800px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    text-align: justify;
+    line-height: 1.8;
+    font-size: 18px;
+    color: #333;
+}
+
+#about h2 {
+    text-align: center;
+    color: #0073e6;
+    font-size: 28px;
+    margin-bottom: 20px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+#about p {
+    margin-bottom: 15px;
+}
+
+#about strong {
+    color: #0073e6;
+    font-weight: bold;
+}
+
+#about::before {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 4px;
+    background: #0073e6;
+    margin: 0 auto 20px;
+    border-radius: 2px;
+}
+
+@media (max-width: 768px) {
+    #about {
+        padding: 20px;
+    }
+
+    #about h2 {
+        font-size: 24px;
+    }
+
+    #about p {
+        font-size: 16px;
+    }
+}
