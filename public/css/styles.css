@@ -72,10 +72,17 @@ h1, h2 {
 
 /* Home Section */
 .fish-image {
-    width: 40%;
-    max-width: 300px;
+    width: 50%;
+    max-width: 400px;
     margin-top: 20px;
     border-radius: 10px;
+}
+
+@media (max-width: 768px) {
+    .fish-image {
+        width: 70%;
+        max-width: 300px;
+    }
 }
 
 /* Map Section */
@@ -681,3 +688,144 @@ footer {
     }
 }
 
+    /* Popup Box Styles */
+    .popup {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+        animation: fadeIn 0.3s ease-in;
+    }
+
+    .popup-content {
+        background: linear-gradient(135deg, #ffffff, #f0f8ff);
+        padding: 40px;
+        border-radius: 25px;
+        text-align: center;
+        max-width: 90%;
+        width: 500px;
+        margin: 20px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        position: relative;
+        transition: all 0.3s ease;
+    }
+
+    #popup-message {
+        font-family: 'Georgia', serif;
+        font-size: 1.4em;
+        font-style: italic;
+        color: #444;
+        margin: 20px 0;
+        padding: 0 20px;
+        line-height: 1.8;
+    }
+
+    #popup-message::before {
+        content: '“';
+        font-size: 2em;
+        color: #888;
+    }
+
+    #popup-message::after {
+        content: '”';
+        font-size: 2em;
+        color: #888;
+    }
+
+    .close-btn {
+        position: absolute;
+        top: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 30px;
+        cursor: pointer;
+        color: #666;
+        background: #ffffff;
+        border: 2px solid #ccc;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .close-btn:hover {
+        color: #000;
+        background: #f0f0f0;
+        transform: translateX(-50%) scale(1.1);
+    }
+
+    .nav-arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 35px;
+        color: #007bff;
+        cursor: pointer;
+        user-select: none;
+        transition: color 0.3s ease, transform 0.2s ease;
+    }
+
+    .nav-arrow:hover {
+        color: #0056b3;
+        transform: scale(1.2);
+    }
+
+    .left-arrow {
+        left: 20px;
+    }
+
+    .right-arrow {
+        right: 20px;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .popup-content {
+            width: 85%;
+            padding: 25px;
+        }
+        
+        #popup-message {
+            font-size: 1.1em;
+        }
+        
+        .close-btn {
+            font-size: 24px;
+        }
+        
+        .nav-arrow {
+            font-size: 26px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .popup-content {
+            width: 90%;
+            padding: 20px;
+            margin: 15px;
+        }
+        
+        #popup-message {
+            font-size: 1em;
+            padding: 0 15px;
+        }
+        
+        .nav-arrow {
+            font-size: 22px;
+        }
+    }
