@@ -413,3 +413,35 @@ document.addEventListener("DOMContentLoaded", loadComments);
                 nextMessage();
             }
         });
+
+        async function fetchLeaderboard() {
+            try {
+                const response = await fetch('/api/leaderboard');
+                if (!response.ok) throw new Error('Network response was not ok');
+                const data = await response.json();
+
+                const leaderboardTable = document.getElementById('leaderboard-data');
+                leaderboardTable.innerHTML = ''; // Clear existing data
+
+                data.forEach((entry, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${entry.country || 'Unknown'}</td>
+                        <td><img src="https://flagcdn.com/w40/${entry.countryCode.toLowerCase()}.png" alt="${entry.country || 'Unknown'} Flag" onerror="this.src='https://flagcdn.com/w40/xx.png'"></td>
+                        <td>${entry.visits}</td>
+                    `;
+                    leaderboardTable.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error fetching leaderboard data:', error);
+                const leaderboardTable = document.getElementById('leaderboard-data');
+                leaderboardTable.innerHTML = '<tr><td colspan="4">Failed to load leaderboard data</td></tr>';
+            }
+        }
+
+        // Fetch leaderboard data on page load
+        document.addEventListener('DOMContentLoaded', fetchLeaderboard);
+
+        // Optional: Refresh every 30 seconds
+        setInterval(fetchLeaderboard, 30000);

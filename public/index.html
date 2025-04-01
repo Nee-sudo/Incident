@@ -19,6 +19,7 @@
         </div>
         <ul class="navbar-menu">
             <li><a href="#home">Home</a></li>
+            <li><a href="#leaderboard"><img src="./images/podium.png" alt="Leaderboard Icon" class="icon"></a></li>
             <li><a href="#goal">Goal</a></li>
             <li><a href="#dream">Dream</a></li>
             <li><a href="#about">About</a></li>
@@ -84,7 +85,26 @@
             <!-- Comments will be populated dynamically -->
         </div>
     </section>
-
+    <!-- 🔹 Leaderboard Section -->
+    <section id="leaderboard">
+        <h2>🏆 Leaderboard</h2>
+        <p>See which countries have visited the fish the most!</p>
+        <div class="leaderboard-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Country</th>
+                        <th>Flag</th>
+                        <th>Visits</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboard-data">
+                    <!-- Leaderboard data will be dynamically populated -->
+                </tbody>
+            </table>
+        </div>
+    </section>
     <!-- 🔹 Footer -->
     <!-- Replace the EJS include with static HTML (copy the content of partials/footer.ejs) -->
     <section id="goal">
