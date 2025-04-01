@@ -416,7 +416,7 @@ document.addEventListener("DOMContentLoaded", loadComments);
 
         async function fetchLeaderboard() {
             try {
-                const response = await fetch('/api/leaderboard');
+                const response = await fetch(`${BACKEND_URL}/api/leaderboard`);
                 if (!response.ok) throw new Error('Network response was not ok');
                 const data = await response.json();
 
