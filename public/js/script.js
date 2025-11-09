@@ -1,4 +1,4 @@
-const BACKEND_URL = "https://fishonworldtour.up.railway.app"; // Backend URL
+const BACKEND_URL = "https://fishonworldtour.netlify.app"; // Backend URL
 
 document.addEventListener("DOMContentLoaded", async function () {
     // Initialize Map
