@@ -1,0 +1,92 @@
+/* Circular Flag Markers */
+.custom-flag-marker {
+  background: transparent;
+  border: none;
+  margin: 0;
+}
+
+.flag-container {
+  width: 36px;
+  height: 36px;
+  position: relative;
+}
+
+.flag-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid #333;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  overflow: hidden;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: #f8f9fa;
+}
+
+.flag-circle::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  right: 3px;
+  bottom: 3px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.8);
+  z-index: 1;
+}
+
+.flag-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  position: relative;
+  z-index: 2;
+}
+
+.flag-circle:hover {
+  transform: scale(1.3) rotate(5deg);
+  box-shadow: 0 8px 25px rgba(74, 144, 226, 0.6);
+  border-color: #4A90E2;
+}
+
+/* Thread-like paths */
+.leaflet-path-thread {
+  stroke: #4A90E2 !important;
+  stroke-width: 1.2px !important;
+  stroke-opacity: 0.7 !important;
+  stroke-dasharray: "3, 3" !important;
+  stroke-linecap: round !important;
+  fill-opacity: 0 !important;
+  filter: drop-shadow(0 0 2px rgba(74, 144, 226, 0.3));
+  animation: draw-thread 3s ease-out forwards;
+}
+
+@keyframes draw-thread {
+  from {
+    stroke-dashoffset: 100;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Custom cluster */
+.leaflet-cluster-icon {
+  border-radius: 50% !important;
+  background: linear-gradient(135deg, #4A90E2, #667eea) !important;
+  border: 3px solid white !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+}
+
+.leaflet-cluster-count {
+  font-weight: 800 !important;
+  font-size: 14px !important;
+  color: white !important;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.8) !important;
+}
+
+/* Light map theme override */
+.leaflet-container a {
+  color: #4A90E2 !important;
+}
