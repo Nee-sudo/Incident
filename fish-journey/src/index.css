@@ -6,6 +6,33 @@
   .glass {
     @apply bg-white/5 backdrop-blur-xl border border-white/20;
   }
+  
+  .shadow-lg {
+    @apply shadow-[0_10px_30px_rgba(0,0,0,0.3)];
+  }
+  
+  .shadow-xl\\\/50 {
+    @apply shadow-[0_20px_50px_rgba(0,0,0,0.5)];
+  }
+  
+  .shadow-md\\\/50 {
+
+    @apply shadow-[0_5px_20px_rgba(0,0,0,0.5)];
+  }
+  
+  /* Mobile menu item enhancements */
+  .menu-item-mobile {
+    @apply relative overflow-hidden;
+  }
+  
+  .menu-item-mobile::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-accent-orange/10 opacity-0 transition-opacity duration-300;
+  }
+  
+  .menu-item-mobile:hover::before {
+    @apply opacity-100;
+  }
   .glass-hover {
     @apply hover:bg-white/10 hover:border-accent-orange transition-all duration-300 hover:-translate-y-2;
   }
@@ -55,3 +82,4 @@
 .scroll-smooth {
   scroll-behavior: smooth;
 }
+

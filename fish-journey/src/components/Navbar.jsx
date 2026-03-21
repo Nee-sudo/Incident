@@ -24,7 +24,7 @@ export default function Navbar({ activeSection }) {
     <motion.nav 
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'glass backdrop-blur-xl' : 'glass'}`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 shadow-lg ${scrolled ? 'glass backdrop-blur-xl shadow-xl/50' : 'glass shadow-md/50'}`}
     >
       <div className="container mx-auto px-6 py-4 flex items-center justify-between">
         <motion.div 
@@ -55,32 +55,56 @@ export default function Navbar({ activeSection }) {
 
         {/* Mobile Menu Button */}
         <button 
-          className="md:hidden text-2xl text-soft-white"
+          className="md:hidden p-2 text-soft-white hover:text-accent-orange rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-accent-orange"
           onClick={() => setIsOpen(!isOpen)}
+          aria-label={isOpen ? "Close menu" : "Open menu"}
+          aria-expanded={isOpen}
         >
-          ☰
+          <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            {isOpen ? (
+              <>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </>
+            ) : (
+              <>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </>
+            )}
+          </svg>
         </button>
       </div>
 
       {/* Mobile Menu */}
       <motion.div 
         initial={false}
-        animate={{ height: isOpen ? 'auto' : 0 }}
-        className="md:hidden glass backdrop-blur-sm origin-top"
+        animate={{ opacity: isOpen ? 1 : 0, scaleY: isOpen ? 1 : 0.95 }}
+        exit={{ opacity: 0, scaleY: 0.95 }}
+        className="md:hidden fixed inset-0 z-40 flex flex-col bg-glass/95 backdrop-blur-2xl pt-20"
+        style={{ top: 'var(--nav-height, 80px)' }}
       >
-        <ul className="py-4 px-6 space-y-2">
-          {menuItems.map((item) => (
-            <li key={item.id}>
+        {/* Backdrop overlay */}
+        <div 
+          className="absolute inset-0 -z-10"
+          onClick={() => setIsOpen(false)}
+        />
+        <ul className="flex-1 flex flex-col items-center justify-center space-y-4 px-6 py-8 text-lg">
+          {menuItems.map((item, index) => (
+            <motion.li 
+              key={item.id}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: index * 0.1 }}
+            >
               <a 
                 href={`#${item.id}`}
-                className={`block py-2 text-soft-white/80 hover:text-accent-orange transition-colors ${
-                  activeSection === item.id ? 'text-accent-orange font-bold' : ''
+                className={`block py-3 px-6 text-soft-white/90 hover:text-accent-orange hover:bg-white/10 font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1 ${
+                  activeSection === item.id ? 'text-accent-orange bg-gradient-to-r from-accent-orange/20 font-bold shadow-orange-500/25' : ''
                 }`}
                 onClick={() => setIsOpen(false)}
               >
                 {item.label}
               </a>
-            </li>
+            </motion.li>
           ))}
         </ul>
       </motion.div>

@@ -46,7 +46,7 @@ function App() {
             transition={{ duration: 0.8 }}
             className="container mx-auto px-6"
           >
-<FancyFlagMap />
+            <FancyFlagMap />
           </motion.div>
         </section>
         <Leaderboard id="leaderboard" />
