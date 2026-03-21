@@ -25,7 +25,10 @@ export default function Hero({ id }) {
         >
           I Want to See
           <br />
-          <span className="bg-gradient-to-r from-accent-orange to-yellow-400 bg-clip-text text-transparent">the World 🥺</span>
+          <span className="inline-block">
+            <span className="bg-gradient-to-r from-accent-orange to-yellow-400 bg-clip-text text-transparent">the World</span>
+            <span className="text-soft-white ml-1">🥺</span>
+          </span>
         </motion.h1>
 
         <motion.p 
