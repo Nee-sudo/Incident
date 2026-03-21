@@ -16,7 +16,7 @@ app.set("views", path.join(__dirname, "views"));
 // Middleware to parse the request body
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
-    origin: ["http://localhost:3000", "https://fishonworldtour.up.railway.app","http://127.0.0.1:3000","https://fishonworldtour.netlify.app","https://fishonworldtour.vercel.app"], // Allow both localhost and deployed frontend
+    origin: ["http://localhost:3000", "http://localhost:5173", "http://127.0.0.1:5173", "https://fishonworldtour.up.railway.app","http://127.0.0.1:3000","https://fishonworldtour.netlify.app","https://fishonworldtour.vercel.app","https://fishonworldtour.onrender.com"], // Added Vite port 5173
     methods: ["GET", "POST"],
     credentials: true
 }));

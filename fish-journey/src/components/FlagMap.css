@@ -90,3 +90,35 @@
 .leaflet-container a {
   color: #4A90E2 !important;
 }
+
+/* NEW: Country GeoJSON Country Fills */
+.country-fill {
+  stroke: rgba(255,255,255,0.6) !important;
+  stroke-width: 0.5px !important;
+  stroke-linejoin: round !important;
+  fill-opacity: 0.2 !important;
+  transition: all 0.3s ease !important;
+}
+
+.country-fill:hover {
+  fill-opacity: 0.5 !important;
+  stroke-width: 1.5px !important;
+  stroke-opacity: 1 !important;
+  filter: drop-shadow(0 0 3px rgba(255,255,255,0.8)) !important;
+}
+
+.country-visited {
+  fill-opacity: 0.4 !important;
+  stroke-width: 1px !important;
+  animation: pulse-glow 2s ease-in-out infinite alternate !important;
+}
+
+@keyframes pulse-glow {
+  from { filter: drop-shadow(0 0 2px currentColor); }
+  to { filter: drop-shadow(0 0 8px currentColor); }
+}
+
+/* Ensure countries on bottom layer */
+.leaflet-geojson-layer path {
+  pointer-events: all !important;
+}

@@ -244,4 +244,22 @@ router.get("/leaderboard", async (req, res) => {
     }
 });
 
+// Static travel destinations data for frontend map
+router.get("/travel-data", (req, res) => {
+  const travelData = {
+    origin: { name: "Lucknow 🐟", lat: 26.8467, lng: 80.9462, country: "India", flag: "https://flagcdn.com/w320/in.png", color: "#FF6B6B" },
+    destinations: [
+      { name: "New York", country: "USA", lat: 40.7128, lng: -74.0060, flag: "https://flagcdn.com/w320/us.png", color: "#4ECDC4" },
+      { name: "London", country: "UK", lat: 51.5074, lng: -0.1278, flag: "https://flagcdn.com/w320/gb.png", color: "#45B7D1" },
+      { name: "Tokyo", country: "Japan", lat: 35.6762, lng: 139.6503, flag: "https://flagcdn.com/w320/jp.png", color: "#F9CA24" },
+      { name: "Sydney", country: "Australia", lat: -33.8688, lng: 151.2093, flag: "https://flagcdn.com/w320/au.png", color: "#F0932B" },
+      { name: "Paris", country: "France", lat: 48.8566, lng: 2.3522, flag: "https://flagcdn.com/w320/fr.png", color: "#EB4D4B" },
+      { name: "Dubai", country: "UAE", lat: 25.2048, lng: 55.2708, flag: "https://flagcdn.com/w320/ae.png", color: "#6C5CE7" },
+      { name: "Toronto", country: "Canada", lat: 43.6532, lng: -79.3832, flag: "https://flagcdn.com/w320/ca.png", color: "#A29BFE" }
+    ]
+  };
+  res.json(travelData);
+});
+
+// ... rest unchanged
 module.exports = router;

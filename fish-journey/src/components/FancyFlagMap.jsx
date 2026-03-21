@@ -1,5 +1,10 @@
-import { useState, useEffect } from 'react'
-import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet'
+import { useState, useEffect, useRef, useCallback } from 'react'
+import { MapContainer, TileLayer, Marker, Popup, Polyline, GeoJSON } from 'react-leaflet'
+import L from 'leaflet'
+import 'leaflet/dist/leaflet.css'
+import { motion, AnimatePresence } from 'framer-motion'
+import { countryCodes, normalizeCountryName } from '../utils/countryCodes.js'
+import { getCountryColor } from '../utils/countryColors.js'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -35,6 +40,7 @@ export default function FancyFlagMap() {
           flagUrl: loc.flagUrl || loc.flag || `https://flagcdn.com/w320/${(loc.actualCountry || 'un').toLowerCase()}.png`,
           name: loc.actualCity || loc.name || 'Location',
           country: loc.actualCountry || loc.country || 'Unknown',
+          countryCode: normalizeCountryName(loc.actualCountry || loc.country),
           color: loc.color || '#4A90E2'
         })).filter(loc => loc.lat && loc.lng && loc.name) : []
         
@@ -47,9 +53,9 @@ export default function FancyFlagMap() {
         console.error('Error fetching map data:', error)
         setOrigin({ lat: 26.8467, lng: 80.9462, name: 'Lucknow 🐟', country: 'India', flagUrl: 'https://flagcdn.com/w320/in.png', color: '#FF6B6B' })
         setLocations([
-          { name: 'New York', country: 'USA', lat: 40.7128, lng: -74.0060, flagUrl: 'https://flagcdn.com/w320/us.png', color: '#4ECDC4' },
-          { name: 'London', country: 'UK', lat: 51.5074, lng: -0.1278, flagUrl: 'https://flagcdn.com/w320/gb.png', color: '#45B7D1' },
-          { name: 'Tokyo', country: 'Japan', lat: 35.6762, lng: 139.6503, flagUrl: 'https://flagcdn.com/w320/jp.png', color: '#F9CA24' }
+          { name: 'New York', country: 'USA', countryCode: 'us', lat: 40.7128, lng: -74.0060, flagUrl: 'https://flagcdn.com/w320/us.png', color: '#4ECDC4' },
+          { name: 'London', country: 'UK', countryCode: 'gb', lat: 51.5074, lng: -0.1278, flagUrl: 'https://flagcdn.com/w320/gb.png', color: '#45B7D1' },
+          { name: 'Tokyo', country: 'Japan', countryCode: 'jp', lat: 35.6762, lng: 139.6503, flagUrl: 'https://flagcdn.com/w320/jp.png', color: '#F9CA24' }
         ])
         setLoading(false)
       }
@@ -95,6 +101,30 @@ export default function FancyFlagMap() {
         <MapContainer center={[20, 0]} zoom={2.5} style={{ height: '100%', width: '100%' }}>
           <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" />
 
+          {/* NEW: Country GeoJSON layer - actual colors */}
+          <GeoJSON 
+            data={null} 
+            url="https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson"
+            eventHandlers={{
+              add: (e) => {
+                const layer = e.layer;
+                const feature = layer.feature;
+                const props = feature.properties;
+                const code = (props.ISO_A2 || props.ISO_A3?.slice(0,2) || 'un').toLowerCase();
+                layer.options.fillColor = getCountryColor(code);
+                layer.options.fillOpacity = 0.15;
+                layer.options.color = 'rgba(255,255,255,0.4)';
+                layer.options.weight = 0.5;
+                layer.options.className = 'country-fill';
+                layer.bindPopup(`<b>${props.NAME || props.NAME_LONG || 'Country'}</b><br>ISO: ${code.toUpperCase()}`);
+                // Mark visited countries
+                if (locations.some(loc => normalizeCountryName(loc.country)?.toLowerCase() === code)) {
+                  layer.options.className += ' country-visited';
+                }
+              }
+            }}
+          />
+
           {/* Lines from origin to destinations */}
           {origin && locations.filter(l => l !== origin).map((loc, idx) => (
             <Polyline
@@ -119,7 +149,7 @@ export default function FancyFlagMap() {
               <Popup>
                 <div className="text-center font-bold p-2">
                   {loc.name}<br/>
-                  <span className="text-gray-500 font-normal">{loc.country}</span>
+                  <span className="text-gray-500 font-normal">{loc.country} ({loc.countryCode?.toUpperCase()})</span>
                 </div>
               </Popup>
             </Marker>
