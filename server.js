@@ -16,7 +16,7 @@ app.set("views", path.join(__dirname, "views"));
 // Middleware to parse the request body
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
-    origin: ["http://localhost:3000", "https://fishonworldtour.up.railway.app","http://127.0.0.1:3000","https://fishonworldtour.netlify.app","https://fishonworldtour.vercel.app"], // Allow both localhost and deployed frontend
+    origin: ["http://localhost:3000", "https://fishonworldtour.up.railway.app","http://127.0.0.1:3000","https://fishonworldtour.netlify.app","https://fishonworldtour.vercel.app","https://fishonworldtour-m6td.vercel.app"], // Allow both localhost and deployed frontend
     methods: ["GET", "POST"],
     credentials: true
 }));
